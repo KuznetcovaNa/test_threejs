@@ -1,0 +1,17 @@
+.control {
+    width: 70%;
+    margin: 10px auto;
+    background-color: #eee;
+}
+
+.content {
+    width: 70%;
+    margin: 10px auto;
+    background-color: #eee;
+    height: 600px;
+}
+
+.content > canvas {
+    width: 100%;
+    height: 100%;
+}
