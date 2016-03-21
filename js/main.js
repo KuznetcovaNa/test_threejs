@@ -1,9 +1,9 @@
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 2000 );
+camera.position.z = 500;
 var renderer = new THREE.WebGLRenderer();
 renderer.setClearColor( 0xffffff );
 $(".content").append(renderer.domElement);
-camera.position.z = 300;
 
 var loader = new THREE.TextureLoader();
 loader.load( 'img/sun.jpg', function ( texture ) {
@@ -15,10 +15,16 @@ loader.load( 'img/sun.jpg', function ( texture ) {
 
 } );
 
+var camera_controls = new THREE.TrackballControls(camera);
+camera_controls.target.set(0, 0, 0);
+
+
 function render() {
     requestAnimationFrame( render );
 
     scene.rotation.y -= 0.005;
+
+    camera_controls.update();
 
     renderer.render( scene, camera );
 }
