@@ -1,17 +1,18 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+}
+
 .control {
-    width: 70%;
-    margin: 10px auto;
-    background-color: #eee;
-}
-
-.content {
-    width: 70%;
-    margin: 10px auto;
-    background-color: #eee;
-    height: 600px;
-}
-
-.content > canvas {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 20px;
+    z-index: 5;
+    width: 400px;
+    min-height: 100px;
+    background: #eee;
+    border-bottom: 2px solid #004;
+    color: #004;
+    padding: 5px;
 }
