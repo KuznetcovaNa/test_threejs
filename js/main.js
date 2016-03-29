@@ -1,60 +1,71 @@
-$("#control_r_middle").change(function(){
-    scene.remove(mesh);
-    loader.load( 'img/sun.jpg', function ( texture ) {
+function container(){
+    var middle_sphere;
+    var flying_sphere;
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 2000 );
+    var renderer = new THREE.WebGLRenderer();
+    var loader = new THREE.TextureLoader();
+    var step = 0;
+    var camera_controls = new THREE.TrackballControls(camera);
+    var middle_sphere_radius = 10;
 
-        var geometry = new THREE.SphereGeometry($("#control_r_middle").val() , 32, 32 );
-        var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
-        mesh = new THREE.Mesh( geometry, material );
-        scene.add( mesh );
+    camera.position.z = 100;
+    camera_controls.target.set(0, 0, 0);
+    renderer.setClearColor( 0xffffff);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    $(".content").append(renderer.domElement);
 
-    } );
-});
-var scene = new THREE.Scene();
-camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 2000 );
-camera.position.z = 100;
-var renderer = new THREE.WebGLRenderer();
-renderer.setClearColor( 0xffffff );
-renderer.setSize(window.innerWidth, window.innerHeight);
-$(".content").append(renderer.domElement);
-var mesh;
-var sphere;
-var loader = new THREE.TextureLoader();
-loader.load( 'img/sun.jpg', function ( texture ) {
+    function load_middle_sphere(){
+        loader.load( 'img/sun.jpg', function ( texture ) {
+            var geometry = new THREE.SphereGeometry( middle_sphere_radius, 32, 32 );
+            var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
+            middle_sphere = new THREE.Mesh( geometry, material );
+            scene.add( middle_sphere );
+        } );
+    }
 
-    var geometry = new THREE.SphereGeometry( 10, 32, 32 );
-    var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
-    mesh = new THREE.Mesh( geometry, material );
-    scene.add( mesh );
+    function load_flying_sphere(){
+        loader.load( 'img/polka_dot.jpg', function ( texture ) {
+            var sphereGeometry = new THREE.SphereGeometry(5, 32, 32);
+            var sphereMaterial = new THREE.MeshBasicMaterial({ map: texture, overdraw: 0.5 });
+            flying_sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            flying_sphere.position.x = 20;
+            scene.add(flying_sphere);
+        } );
+    }
 
-} );
-loader.load( 'img/polka_dot.jpg', function ( texture ) {
+    function control_radius_middle(){
+        $("#control_r_middle").change(function(){
+            scene.remove(middle_sphere);
+            middle_sphere_radius = $("#control_r_middle").val();
+            load_middle_sphere();
+        });
+    }
 
-    var sphereGeometry = new THREE.SphereGeometry(5, 32, 32);
-    var sphereMaterial = new THREE.MeshBasicMaterial({ map: texture, overdraw: 0.5 });
-    sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    sphere.position.x = 20;
-    sphere.position.y = 0;
-    sphere.position.z = 0;
-    scene.add(sphere);
+    function render() {
+        requestAnimationFrame( render );
+        middle_sphere.rotation.y += 0.005;
+        flying_sphere.rotation.y -= 0.01;
+        step += 0.01;
+        flying_sphere.position.x = 20*Math.sin(step+Math.PI/2);
+        flying_sphere.position.z = 20*Math.sin(step);
+        camera_controls.update();
+        renderer.render( scene, camera );
+    }
 
-} );
+    function init(){
+        load_middle_sphere();
+        load_flying_sphere();
+        control_radius_middle();
+        render();
+    }
 
+    init();
 
-var camera_controls = new THREE.TrackballControls(camera);
-camera_controls.target.set(0, 0, 0);
-var step = 0;
-function render() {
-    requestAnimationFrame( render );
+    return {
 
-    mesh.rotation.y += 0.005;
-    sphere.rotation.y -= 0.01;
-    step += 0.01;
-    sphere.position.x = 20*Math.sin(step+Math.PI/2);
-    sphere.position.z = 20*Math.sin(step);
-
-    camera_controls.update();
-
-    renderer.render( scene, camera );
+    }
 }
 
-render();
+var physics = container();
+
